@@ -1,5 +1,6 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
+import BoardComponent from "./components/BoardComponent";
 
 import "./index.css";
 
@@ -11,4 +12,4 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <h1>Hello</h1>, root!);
+render(() => <BoardComponent />, root!);
