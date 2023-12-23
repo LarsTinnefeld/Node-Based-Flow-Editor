@@ -1,5 +1,6 @@
 import { Component, createSignal, onMount } from "solid-js";
 import styles from "./styles.module.css";
+import ButtonComponent from "../ButtonsComponent";
 
 const BoardComponent: Component = () => {
   const [grabbingBoard, setGrabbingBoard] = createSignal<boolean>(false);
@@ -8,6 +9,7 @@ const BoardComponent: Component = () => {
     x: number;
     y: number;
   }>({ x: -1, y: -1 });
+  const [selectedNode, setSelectedNode] = createSignal<string | null>(null);
 
   onMount(() => {
     const boardElement = document.getElementById("board");
@@ -57,8 +59,16 @@ const BoardComponent: Component = () => {
     }
   }
 
+  function handleOnClickAdd(numberInputs: number, numberOutputs: number) {}
+  function handleOnClickDelete() {}
+
   return (
     <div id="boardWrapper" class={styles.wrapper}>
+      <ButtonComponent
+        showDelete={selectedNode() !== null}
+        onClickAdd={handleOnClickAdd}
+        onClickDelete={handleOnClickDelete}
+      ></ButtonComponent>
       <div
         id="board"
         class={grabbingBoard() ? styles.boardDragging : styles.board}
