@@ -1,6 +1,6 @@
 import { Component, createSignal, onMount } from "solid-js";
 import styles from "./styles.module.css";
-import ButtonComponent from "../ButtonsComponent";
+import ButtonsComponent from "../ButtonsComponent";
 
 const BoardComponent: Component = () => {
   const [grabbingBoard, setGrabbingBoard] = createSignal<boolean>(false);
@@ -64,11 +64,11 @@ const BoardComponent: Component = () => {
 
   return (
     <div id="boardWrapper" class={styles.wrapper}>
-      <ButtonComponent
+      <ButtonsComponent
         showDelete={selectedNode() !== null}
         onClickAdd={handleOnClickAdd}
         onClickDelete={handleOnClickDelete}
-      ></ButtonComponent>
+      ></ButtonsComponent>
       <div
         id="board"
         class={grabbingBoard() ? styles.boardDragging : styles.board}
