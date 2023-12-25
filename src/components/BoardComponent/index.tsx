@@ -1,6 +1,28 @@
-import { Component, createSignal, onMount } from "solid-js";
+import {
+  Accessor,
+  Component,
+  For,
+  Setter,
+  createSignal,
+  onMount,
+} from "solid-js";
 import styles from "./styles.module.css";
 import ButtonsComponent from "../ButtonsComponent";
+import NodeComponent from "../NodeComponents";
+
+interface Node {
+  id: string;
+  numberInputs: number;
+  numberOutputs: number;
+  prevPosition: {
+    get: Accessor<{ x: number; y: number }>;
+    set: Setter<{ x: number; y: number }>;
+  };
+  currPosition: {
+    get: Accessor<{ x: number; y: number }>;
+    set: Setter<{ x: number; y: number }>;
+  };
+}
 
 const BoardComponent: Component = () => {
   const [grabbingBoard, setGrabbingBoard] = createSignal<boolean>(false);
@@ -10,6 +32,8 @@ const BoardComponent: Component = () => {
     y: number;
   }>({ x: -1, y: -1 });
   const [selectedNode, setSelectedNode] = createSignal<string | null>(null);
+
+  const [nodes, setNodes] = createSignal<Node[]>([]);
 
   onMount(() => {
     const boardElement = document.getElementById("board");
@@ -59,7 +83,31 @@ const BoardComponent: Component = () => {
     }
   }
 
-  function handleOnClickAdd(numberInputs: number, numberOutputs: number) {}
+  function handleOnClickAdd(numberInputs: number, numberOutputs: number) {
+    const randomX = Math.random() * window.innerWidth;
+    const randomY = Math.random() * window.innerHeight;
+
+    const [nodePrev, setNodePrev] = createSignal<{ x: number; y: number }>({
+      x: randomX,
+      y: randomY,
+    });
+    const [nodeCurr, setNodeCurr] = createSignal<{ x: number; y: number }>({
+      x: randomX,
+      y: randomY,
+    });
+
+    setNodes([
+      ...nodes(),
+      {
+        id: `node_${Math.random().toString(36).substring(2, 8)}`,
+        numberInputs: numberInputs,
+        numberOutputs: numberOutputs,
+        prevPosition: { get: nodePrev, set: setNodePrev },
+        currPosition: { get: nodeCurr, set: setNodeCurr },
+      },
+    ]);
+  }
+
   function handleOnClickDelete() {}
 
   return (
@@ -75,7 +123,24 @@ const BoardComponent: Component = () => {
         onMouseDown={handleOnMouseDownBoard}
         onMouseUp={handleOnMouseUpBoard}
         onMouseMove={handleOnMouseMove}
-      ></div>
+      >
+        <For each={nodes()}>
+          {(node: Node) => (
+            <NodeComponent
+              id={node.id}
+              x={node.currPosition.get().x}
+              y={node.currPosition.get().y}
+              numberInputs={node.numberInputs}
+              numberOutputs={node.numberOutputs}
+              selected={selectedNode() === node.id}
+              onMouseDownNode={handeOnMouseDownNode}
+              onMouseDownOutput={handeOnMouseDownOutput}
+              onMouseEnterInput={handeOnMouseEnterInput}
+              onMouseLeaveInput={handeOnMouseLeaveInput}
+            />
+          )}
+        </For>
+      </div>
     </div>
   );
 };
